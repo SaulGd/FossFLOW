@@ -9,6 +9,7 @@ import kubernetesIsopack from '@isoflow/isopacks/dist/kubernetes';
 import { DiagramData, mergeDiagramData, extractSavableData } from './diagramUtils';
 import { StorageManager } from './StorageManager';
 import './App.css';
+import React, { /import React, { useMemo, 
 
 const icons = flattenCollections([
   isoflowIsopack,
@@ -252,8 +253,8 @@ function App() {
         ...model,
         // Ensure we always have required fields
         title: model.title || prevModel?.title || diagramData.title || diagramName || 'Untitled',
-        // Keep icons in the data structure for FossFLOW to work
-        icons: icons, // Always use full icon set
+        // Keep icons stable - only update if model explicitly has icons
+        icons: model.icons || prevModel?.icons || diagramData.icons || [],
         colors: model.colors || prevModel?.colors || diagramData.colors || [],
         // These fields likely come from the model update
         items: model.items !== undefined ? model.items : (prevModel?.items || diagramData.items || []),
@@ -305,7 +306,7 @@ function App() {
         const mergedData: DiagramData = {
           ...parsedData,
           title: parsedData.title || 'Imported Diagram',
-          icons: icons, // Always use app icons
+          icons: icons.length ? icons : [], // Use stable icons reference/
           colors: parsedData.colors?.length ? parsedData.colors : defaultColors,
           fitToScreen: parsedData.fitToScreen !== false
         };
@@ -382,7 +383,7 @@ function App() {
     }, 5000); // Auto-save after 5 seconds of changes
     
     return () => clearTimeout(autoSaveTimer);
-  }, [currentModel, hasUnsavedChanges, currentDiagram, diagramName, icons]);
+  }, [currentModel, hasUnsavedChanges, currentDiagram, diagramName]);
   
   // Warn before closing if there are unsaved changes
   useEffect(() => {
