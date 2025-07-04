@@ -9,7 +9,6 @@ import kubernetesIsopack from '@isoflow/isopacks/dist/kubernetes';
 import { DiagramData, mergeDiagramData, extractSavableData } from './diagramUtils';
 import { StorageManager } from './StorageManager';
 import './App.css';
-import React, { /import React, { useMemo, 
 
 const icons = flattenCollections([
   isoflowIsopack,
